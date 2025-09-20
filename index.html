@@ -4,16 +4,371 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodeQuest - Personalized Programming Education</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Complete inline CSS - no external dependencies */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header and Navigation */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links li a {
+            color: #333;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .streak-tracker {
+            background: #ff6b6b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Main content */
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Workspace layout */
+        #workspace {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .panel {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .problem-panel h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.5em;
+        }
+
+        .problem-panel p {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        #input-output-samples, #test-case-descriptions {
+            background: #f8f9ff;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 4px solid #667eea;
+        }
+
+        #editor-container {
+            position: relative;
+            height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        #editor {
+            width: 100%;
+            height: 100%;
+        }
+
+        #live-output {
+            margin-top: 1rem;
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #test-results {
+            list-style: none;
+        }
+
+        #test-results li {
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            border-radius: 5px;
+            background: #f0f0f0;
+        }
+
+        #test-results li.pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        #test-results li.fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        #hints-list {
+            list-style: none;
+        }
+
+        #hints-list li {
+            background: linear-gradient(90deg, #fff3cd, #ffeaa7);
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 10px;
+            border-left: 4px solid #f39c12;
+        }
+
+        /* Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        #improvement-chart {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        /* History and Achievements */
+        .history-item, .badge-item {
+            background: #f8f9ff;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .badge-item {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            #workspace {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            
+            .editor-panel {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            #workspace {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .editor-panel {
+                grid-column: span 1;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Accessibility */
+        a:focus, button:focus {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+    </style>
     <!-- Ace Editor CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
-    <!-- Chart.js for dashboard -->
+    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">CodeQuest</div>
+            <div class="logo">NextStep</div>
             <ul class="nav-links">
                 <li><a href="#workspace" class="active">Workspace</a></li>
                 <li><a href="#dashboard">Dashboard</a></li>
@@ -27,67 +382,686 @@
 
     <main>
         <section id="workspace" class="active">
-            <div class="problem-panel">
-                <h2 id="problem-title">Loading Problem...</h2>
-                <p id="problem-description"></p>
-                <div id="input-output-samples"></div>
-                <div id="test-case-descriptions"></div>
-                <button id="next-problem">Next Problem</button>
-            </div>
-            <div class="editor-panel">
-                <div id="editor"></div>
-                <div id="live-output">
-                    <h3>Live Output</h3>
-                    <pre id="output-console"></pre>
+            <div class="panel problem-panel">
+                <div class="loading" id="loading-problem">
+                    <div class="spinner"></div>
+                    <p>Loading your next challenge...</p>
                 </div>
-                <button id="run-code">Run Code</button>
-                <button id="submit-code">Submit</button>
+                <div id="problem-content" style="display: none;">
+                    <h2 id="problem-title">Challenge Title</h2>
+                    <p id="problem-description"></p>
+                    <div id="input-output-samples"></div>
+                    <div id="test-case-descriptions"></div>
+                    <button id="next-problem" class="btn-primary">Next Challenge</button>
+                </div>
             </div>
-            <div class="test-suite-panel">
-                <h3>Test Suite</h3>
-                <ul id="test-results"></ul>
+
+            <div class="panel editor-panel">
+                <div id="editor-container">
+                    <div id="editor">/* Loading editor... */</div>
+                </div>
+                <div id="live-output">
+                    <h4 style="color: #ccc; margin-bottom: 0.5rem;">Live Output</h4>
+                    <pre id="output-console" style="margin: 0;">Click "Run Code" to see output</pre>
+                </div>
+                <div class="button-group">
+                    <button id="run-code">Run Code</button>
+                    <button id="submit-code">Submit Solution</button>
+                </div>
             </div>
-            <div class="hints-sidebar">
-                <h3>Hints & Feedback</h3>
-                <ul id="hints-list"></ul>
+
+            <div class="panel test-suite-panel">
+                <h3>Test Results</h3>
+                <ul id="test-results">
+                    <li>Run your code to see test results</li>
+                </ul>
+            </div>
+
+            <div class="panel hints-sidebar">
+                <h3>💡 Hints & Feedback</h3>
+                <ul id="hints-list">
+                    <li>Solve the problem step by step</li>
+                    <li>Check the sample inputs/outputs</li>
+                </ul>
             </div>
         </section>
 
         <section id="dashboard">
-            <h2>Dashboard</h2>
-            <div class="stats">
-                <p>Problems Solved: <span id="problems-solved">0</span></p>
-                <p>Time Spent: <span id="time-spent">0 minutes</span></p>
-                <p>Skill Level: <span id="skill-level">Beginner</span></p>
+            <h2>📊 Your Dashboard</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number" id="problems-solved">0</span>
+                    <span>Problems Solved</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="time-spent">0</span>
+                    <span>Total Time</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="skill-level">Beginner</span>
+                    <span>Skill Level</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="current-streak">0</span>
+                    <span>Current Streak</span>
+                </div>
             </div>
-            <canvas id="improvement-chart"></canvas>
-            <div id="recommended-paths">
-                <h3>Recommended Learning Paths</h3>
-                <ul></ul>
+            
+            <div id="improvement-chart-container">
+                <canvas id="improvement-chart"></canvas>
+            </div>
+            
+            <div class="panel">
+                <h3>🎯 Recommended Learning Path</h3>
+                <ul id="recommended-paths">
+                    <li>🔥 Start with Basic Algorithms</li>
+                    <li>📚 Explore Data Structures</li>
+                    <li>⚡ Master Problem Solving</li>
+                </ul>
             </div>
         </section>
 
         <section id="profile">
-            <h2>Profile</h2>
-            <!-- Placeholder for profile info -->
-            <p>Edit your profile here.</p>
+            <h2>👤 Profile</h2>
+            <div class="panel">
+                <p>Manage your profile settings, preferences, and account information here.</p>
+                <p><strong>Username:</strong> CodeWarrior</p>
+                <p><strong>Joined:</strong> January 2025</p>
+                <p><strong>Learning Goal:</strong> Master JavaScript</p>
+            </div>
         </section>
 
         <section id="history">
-            <h2>History</h2>
-            <ul id="problem-history"></ul>
+            <h2>📝 Solution History</h2>
+            <div class="panel">
+                <ul id="problem-history">
+                    <li class="history-item">No solutions yet - start coding!</li>
+                </ul>
+            </div>
         </section>
 
         <section id="achievements">
-            <h2>Achievements</h2>
-            <ul id="badges-list"></ul>
+            <h2>🏆 Achievements</h2>
+            <div class="panel">
+                <ul id="badges-list">
+                    <li class="badge-item">Welcome to CodeQuest! 🎉</li>
+                </ul>
+            </div>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2025 CodeQuest. All rights reserved.</p>
+    <footer style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.8);">
+        <p>&copy; 2025 CodeQuest. Built with ❤️ for programmers everywhere.</p>
     </footer>
 
-    <script src="app.js"></script>
+    <script>
+        // Complete inline JavaScript - no external dependencies
+        console.log('CodeQuest initializing...');
+
+        // Sample problems data
+        const problems = [
+            {
+                id: 1,
+                title: "Sum of Two Numbers",
+                description: "Write a function that takes two numbers as parameters and returns their sum. Remember to handle both positive and negative numbers correctly.",
+                difficulty: "easy",
+                testCases: [
+                    { input: [1, 2], expected: 3, description: "Basic positive sum" },
+                    { input: [5, -3], expected: 2, description: "Positive + negative" },
+                    { input: [-1, -4], expected: -5, description: "Both negative" },
+                    { input: [0, 100], expected: 100, description: "Zero + positive" }
+                ],
+                hints: [
+                    "Use the + operator to add numbers",
+                    "Make sure your function returns the result",
+                    "Handle negative numbers correctly"
+                ],
+                template: `function sumTwoNumbers(a, b) {
+    // Your code here
+    return a + b;
+}`
+            },
+            {
+                id: 2,
+                title: "Reverse a String",
+                description: "Write a function that takes a string and returns it reversed. The function should work with any string length, including empty strings.",
+                difficulty: "medium",
+                testCases: [
+                    { input: ["hello"], expected: "olleh", description: "Basic reversal" },
+                    { input: ["world!"], expected: "!dlrow", description: "With punctuation" },
+                    { input: [""], expected: "", description: "Empty string" },
+                    { input: ["a"], expected: "a", description: "Single character" }
+                ],
+                hints: [
+                    "Consider using split(), reverse(), and join()",
+                    "Strings are immutable, so create a new string",
+                    "Test with empty strings and single characters"
+                ],
+                template: `function reverseString(str) {
+    // Your code here
+    return str.split('').reverse().join('');
+}`
+            },
+            {
+                id: 3,
+                title: "Find Maximum in Array",
+                description: "Write a function that finds and returns the maximum number in a given array of numbers. The array will always contain at least one element.",
+                difficulty: "medium",
+                testCases: [
+                    { input: [[1, 3, 2]], expected: 3, description: "Small array" },
+                    { input: [[-1, -5, 0, 3]], expected: 3, description: "Mixed numbers" },
+                    { input: [[42]], expected: 42, description: "Single element" },
+                    { input: [[10, 20, 15, 25, 5]], expected: 25, description: "Larger array" }
+                ],
+                hints: [
+                    "Use Math.max() with the spread operator [...array]",
+                    "Initialize with the first element and compare",
+                    "Consider using reduce() for a functional approach"
+                ],
+                template: `function findMax(arr) {
+    // Your code here
+    return Math.max(...arr);
+}`
+            }
+        ];
+
+        // User data management
+        let userData = JSON.parse(localStorage.getItem('codequest-user')) || {
+            solved: 0,
+            attempts: {},
+            timeSpent: 0,
+            skillLevel: 'Beginner',
+            history: [],
+            badges: ['Welcome to CodeQuest! 🎉'],
+            streak: 0,
+            lastLogin: null,
+            username: 'CodeWarrior'
+        };
+
+        let currentProblem = null;
+        let startTime = Date.now();
+        let editor = null;
+        let improvementChart = null;
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing CodeQuest...');
+            
+            // Update streak
+            updateStreak();
+            
+            // Initialize editor
+            initEditor();
+            
+            // Load initial problem
+            loadNextProblem();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Load dashboard if needed
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                loadDashboard();
+            }
+        });
+
+        function initEditor() {
+            try {
+                editor = ace.edit("editor");
+                editor.setTheme("ace/theme/monokai");
+                editor.session.setMode("ace/mode/javascript");
+                editor.setOptions({
+                    fontSize: "14px",
+                    showGutter: true,
+                    showPrintMargin: false,
+                    wrap: true
+                });
+                console.log('Ace Editor initialized successfully');
+            } catch (error) {
+                console.error('Failed to initialize Ace Editor:', error);
+                // Fallback: use contenteditable div
+                document.getElementById('editor').innerHTML = 
+                    '<div contenteditable="true" style="height: 100%; padding: 10px; background: #1e1e1e; color: #f8f8f2; font-family: monospace; border-radius: 0;">' +
+                    '/* Editor loading... */\n' +
+                    'function solution() {\n    // Write your code here\n}' +
+                    '</div>';
+            }
+        }
+
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    
+                    // Update active states
+                    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+                    document.getElementById(targetId).classList.add('active');
+                    
+                    document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    // Load specific content
+                    switch(targetId) {
+                        case 'dashboard':
+                            loadDashboard();
+                            break;
+                        case 'history':
+                            loadHistory();
+                            break;
+                        case 'achievements':
+                            loadAchievements();
+                            break;
+                    }
+                });
+            });
+
+            // Workspace buttons
+            document.getElementById('run-code').addEventListener('click', runCode);
+            document.getElementById('submit-code').addEventListener('click', submitCode);
+            document.getElementById('next-problem').addEventListener('click', loadNextProblem);
+        }
+
+        function updateStreak() {
+            const today = new Date().toDateString();
+            
+            if (!userData.lastLogin) {
+                userData.streak = 1;
+                userData.lastLogin = today;
+            } else if (userData.lastLogin !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                if (userData.lastLogin === yesterday.toDateString()) {
+                    userData.streak++;
+                } else {
+                    userData.streak = 1;
+                }
+                userData.lastLogin = today;
+            }
+            
+            document.getElementById('streak').textContent = userData.streak;
+            document.getElementById('current-streak').textContent = userData.streak + ' days';
+            
+            saveUserData();
+        }
+
+        function loadNextProblem() {
+            // Adaptive difficulty selection
+            let targetDifficulty = 'easy';
+            const solvedCount = userData.solved;
+            const avgAttempts = Object.values(userData.attempts).reduce((a, b) => a + b, 0) / Math.max(1, solvedCount);
+            
+            if (solvedCount > 8 && avgAttempts < 2) {
+                targetDifficulty = 'medium';
+            } else if (solvedCount > 15) {
+                targetDifficulty = 'medium';
+            }
+            
+            // Find unsolved problem of target difficulty
+            let nextProblem = problems.find(p => 
+                p.difficulty === targetDifficulty && 
+                !userData.history.some(h => h.id === p.id && h.status === 'solved')
+            );
+            
+            // If none found, pick any unsolved or cycle back
+            if (!nextProblem) {
+                nextProblem = problems.find(p => 
+                    !userData.history.some(h => h.id === p.id && h.status === 'solved')
+                ) || problems[0];
+            }
+            
+            currentProblem = nextProblem;
+            loadProblem(currentProblem);
+        }
+
+        function loadProblem(problem) {
+            console.log('Loading problem:', problem.title);
+            
+            // Show loading state
+            document.getElementById('loading-problem').style.display = 'block';
+            document.getElementById('problem-content').style.display = 'none';
+            
+            setTimeout(() => {
+                // Hide loading
+                document.getElementById('loading-problem').style.display = 'none';
+                document.getElementById('problem-content').style.display = 'block';
+                
+                // Update problem content
+                document.getElementById('problem-title').textContent = problem.title;
+                document.getElementById('problem-description').textContent = problem.description;
+                
+                // Sample inputs/outputs
+                const samplesDiv = document.getElementById('input-output-samples');
+                samplesDiv.innerHTML = '<h4>📋 Sample Input/Output:</h4>';
+                problem.testCases.slice(0, 2).forEach((tc, i) => {
+                    samplesDiv.innerHTML += `
+                        <div style="margin: 0.5rem 0; padding: 0.5rem; background: #e8f4f8; border-radius: 5px;">
+                            <strong>Sample ${i+1}:</strong><br>
+                            Input: <code>${JSON.stringify(tc.input)}</code><br>
+                            Expected: <code>${JSON.stringify(tc.expected)}</code>
+                        </div>
+                    `;
+                });
+                
+                // Test case info
+                document.getElementById('test-case-descriptions').innerHTML = `
+                    <h4>🧪 Test Cases (${problem.testCases.length} total):</h4>
+                    <p>Complete test suite will run when you submit. Includes edge cases and performance tests.</p>
+                `;
+                
+                // Set editor template
+                if (editor) {
+                    editor.setValue(problem.template || `// ${problem.title}\n\nfunction solution() {\n    // Your solution here\n    return null;\n}`);
+                    editor.focus();
+                }
+                
+                // Reset test results and hints
+                document.getElementById('test-results').innerHTML = '<li>Ready to test your solution!</li>';
+                showHints(['Think about the problem requirements', 'Consider edge cases', 'Test with sample inputs first']);
+                
+                startTime = Date.now();
+            }, 800); // Simulate loading time
+        }
+
+        function runCode() {
+            if (!currentProblem) return;
+            
+            const code = editor ? editor.getValue() : document.getElementById('editor').textContent;
+            const outputConsole = document.getElementById('output-console');
+            
+            outputConsole.textContent = 'Running...';
+            
+            setTimeout(() => {
+                try {
+                    // Create function from code
+                    const funcBody = code.includes('function') ? code : `function solution() {${code}}`;
+                    const func = new Function('return ' + funcBody)();
+                    
+                    // Run with first sample
+                    const sample = currentProblem.testCases[0];
+                    const result = func(...sample.input);
+                    
+                    if (JSON.stringify(result) === JSON.stringify(sample.expected)) {
+                        outputConsole.innerHTML = `
+                            <span style="color: #00ff00;">✓ SUCCESS!</span><br>
+                            Input: ${JSON.stringify(sample.input)}<br>
+                            Output: ${JSON.stringify(result)}<br>
+                            Expected: ${JSON.stringify(sample.expected)}
+                        `;
+                    } else {
+                        outputConsole.innerHTML = `
+                            <span style="color: #ff6b6b;">⚠ Expected different result</span><br>
+                            Input: ${JSON.stringify(sample.input)}<br>
+                            Got: ${JSON.stringify(result)}<br>
+                            Expected: ${JSON.stringify(sample.expected)}
+                        `;
+                    }
+                } catch (error) {
+                    outputConsole.innerHTML = `
+                        <span style="color: #ff4757;">❌ Error: ${error.message}</span><br>
+                        <small>Check your syntax and function definition</small>
+                    `;
+                }
+            }, 500);
+        }
+
+        function submitCode() {
+            if (!currentProblem || !editor) return;
+            
+            const code = editor.getValue();
+            const timeTaken = (Date.now() - startTime) / 1000; // seconds
+            const minutes = Math.round(timeTaken / 60);
+            
+            // Update time spent
+            userData.timeSpent += minutes;
+            
+            // Run all test cases
+            let passed = 0;
+            const resultsList = document.getElementById('test-results');
+            resultsList.innerHTML = '';
+            
+            try {
+                const funcBody = code.includes('function') ? code : `function solution() {${code}}`;
+                const func = new Function('return ' + funcBody)();
+                
+                currentProblem.testCases.forEach((tc, i) => {
+                    try {
+                        const result = func(...tc.input);
+                        const isPass = JSON.stringify(result) === JSON.stringify(tc.expected);
+                        
+                        if (isPass) passed++;
+                        
+                        const resultItem = document.createElement('li');
+                        resultItem.className = isPass ? 'pass' : 'fail';
+                        resultItem.innerHTML = `
+                            <strong>${isPass ? '✓' : '✗'} Test ${i+1}: ${tc.description}</strong><br>
+                            ${!isPass ? `Expected: <code>${JSON.stringify(tc.expected)}</code>, Got: <code>${JSON.stringify(result)}</code>` : ''}
+                        `;
+                        resultsList.appendChild(resultItem);
+                    } catch (testError) {
+                        const resultItem = document.createElement('li');
+                        resultItem.className = 'fail';
+                        resultItem.innerHTML = `<strong>✗ Test ${i+1}: Execution Error</strong><br><small>${testError.message}</small>`;
+                        resultsList.appendChild(resultItem);
+                    }
+                });
+                
+                // Update user stats
+                const attempts = (userData.attempts[currentProblem.id] || 0) + 1;
+                userData.attempts[currentProblem.id] = attempts;
+                
+                const result = {
+                    id: currentProblem.id,
+                    status: passed === currentProblem.testCases.length ? 'solved' : 'failed',
+                    attempts,
+                    time: minutes,
+                    timestamp: new Date().toISOString()
+                };
+                
+                userData.history.unshift(result);
+                
+                if (result.status === 'solved') {
+                    userData.solved++;
+                    awardBadges();
+                    updateSkillLevel();
+                    
+                    // Show success message
+                    resultsList.innerHTML = `
+                        <li class="pass" style="text-align: center; font-size: 1.2em; padding: 1rem;">
+                            🎉 Congratulations! All tests passed! 🎉<br>
+                            <small>Solved in ${minutes} minutes with ${attempts} attempt${attempts > 1 ? 's' : ''}</small>
+                        </li>
+                        ${resultsList.innerHTML}
+                    `;
+                    
+                    showHints(['Great job! You can proceed to the next challenge.', 'Review your solution for optimization opportunities.']);
+                } else {
+                    showHints([
+                        'Keep trying! Analyze the failing test cases.',
+                        'Check your edge case handling.',
+                        ...currentProblem.hints
+                    ]);
+                }
+                
+            } catch (error) {
+                resultsList.innerHTML = `
+                    <li class="fail" style="text-align: center;">
+                        <strong>❌ Syntax Error</strong><br>
+                        <small>${error.message}</small><br>
+                        <small>Check your code syntax and function definition</small>
+                    </li>
+                `;
+            }
+            
+            saveUserData();
+            updateDashboardStats();
+        }
+
+        function showHints(hints) {
+            const hintsList = document.getElementById('hints-list');
+            hintsList.innerHTML = '';
+            
+            hints.forEach((hint, index) => {
+                const hintItem = document.createElement('li');
+                hintItem.innerHTML = `<span style="color: #e67e22;">${index + 1}.</span> ${hint}`;
+                hintsList.appendChild(hintItem);
+            });
+        }
+
+        function updateSkillLevel() {
+            const solved = userData.solved;
+            if (solved >= 20) {
+                userData.skillLevel = 'Expert';
+            } else if (solved >= 10) {
+                userData.skillLevel = 'Intermediate';
+            } else if (solved >= 3) {
+                userData.skillLevel = 'Beginner';
+            } else {
+                userData.skillLevel = 'Newcomer';
+            }
+        }
+
+        function awardBadges() {
+            const solved = userData.solved;
+            
+            if (solved === 1 && !userData.badges.includes('First Solve! 🎯')) {
+                userData.badges.push('First Solve! 🎯');
+            }
+            if (solved === 5 && !userData.badges.includes('Beginner Master 🥉')) {
+                userData.badges.push('Beginner Master 🥉');
+            }
+            if (solved === 10 && !userData.badges.includes('Intermediate Hero 🥈')) {
+                userData.badges.push('Intermediate Hero 🥈');
+            }
+            if (userData.streak >= 7 && !userData.badges.includes('Week Streak 🔥')) {
+                userData.badges.push('Week Streak 🔥');
+            }
+        }
+
+        function loadDashboard() {
+            updateDashboardStats();
+            
+            // Create improvement chart
+            const ctx = document.getElementById('improvement-chart');
+            if (ctx && !improvementChart) {
+                improvementChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: userData.history.slice(0, 10).map((_, i) => `P${i+1}`),
+                        datasets: [{
+                            label: 'Time (minutes)',
+                            data: userData.history.slice(0, 10).map(h => h.time || 1),
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: true,
+                                ticks: { stepSize: 1 }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('problems-solved').textContent = userData.solved;
+            document.getElementById('time-spent').textContent = Math.round(userData.timeSpent) + ' min';
+            document.getElementById('skill-level').textContent = userData.skillLevel;
+        }
+
+        function loadHistory() {
+            const historyList = document.getElementById('problem-history');
+            historyList.innerHTML = '';
+            
+            if (userData.history.length === 0) {
+                historyList.innerHTML = '<li class="history-item" style="text-align: center; color: #666;">No solutions yet - start coding in the workspace!</li>';
+                return;
+            }
+            
+            // Group by problem
+            const problemHistory = {};
+            userData.history.forEach(entry => {
+                if (!problemHistory[entry.id]) {
+                    problemHistory[entry.id] = [];
+                }
+                problemHistory[entry.id].push(entry);
+            });
+            
+            Object.entries(problemHistory).forEach(([problemId, entries]) => {
+                const problem = problems.find(p => p.id == problemId);
+                if (problem) {
+                    const latest = entries[0];
+                    const historyItem = document.createElement('li');
+                    historyItem.className = `history-item ${latest.status}`;
+                    historyItem.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${problem.title}</strong><br>
+                                <small>${latest.status === 'solved' ? '✓ Solved' : '⚠ In Progress'}</small> | 
+                                <small>${latest.attempts} attempt${latest.attempts > 1 ? 's' : ''}</small> | 
+                                <small>${latest.time} min</small>
+                            </div>
+                            <span style="font-size: 1.2em;">${latest.status === 'solved' ? '🎉' : '🔄'}</span>
+                        </div>
+                    `;
+                    historyList.appendChild(historyItem);
+                }
+            });
+        }
+
+        function loadAchievements() {
+            const badgesList = document.getElementById('badges-list');
+            badgesList.innerHTML = '';
+            
+            userData.badges.forEach(badge => {
+                const badgeItem = document.createElement('li');
+                badgeItem.className = 'badge-item';
+                badgeItem.textContent = badge;
+                badgesList.appendChild(badgeItem);
+            });
+        }
+
+        function saveUserData() {
+            localStorage.setItem('codequest-user', JSON.stringify(userData));
+            console.log('User data saved:', userData);
+        }
+
+        // Auto-save editor content every 30 seconds
+        setInterval(() => {
+            if (editor && currentProblem) {
+                const code = editor.getValue();
+                localStorage.setItem(`codequest-draft-${currentProblem.id}`, code);
+            }
+        }, 30000);
+
+        // Load saved draft on problem load
+        function loadDraft(problemId) {
+            const draft = localStorage.getItem(`codequest-draft-${problemId}`);
+            if (draft && editor) {
+                editor.setValue(draft);
+            }
+        }
+
+        // Initialize with first problem after a short delay
+        setTimeout(() => {
+            if (currentProblem) {
+                loadDraft(currentProblem.id);
+            }
+        }, 1000);
+
+        console.log('CodeQuest fully initialized! Ready to code 🚀');
+    </script>
 </body>
 </html>
