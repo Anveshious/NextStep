@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeQuest - Personalized Programming Education</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Ace Editor CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <!-- Chart.js for dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">CodeQuest</div>
+            <ul class="nav-links">
+                <li><a href="#workspace" class="active">Workspace</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#profile">Profile</a></li>
+                <li><a href="#history">History</a></li>
+                <li><a href="#achievements">Achievements</a></li>
+            </ul>
+            <div class="streak-tracker">Streak: <span id="streak">0</span> days 🔥</div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="workspace" class="active">
+            <div class="problem-panel">
+                <h2 id="problem-title">Loading Problem...</h2>
+                <p id="problem-description"></p>
+                <div id="input-output-samples"></div>
+                <div id="test-case-descriptions"></div>
+                <button id="next-problem">Next Problem</button>
+            </div>
+            <div class="editor-panel">
+                <div id="editor"></div>
+                <div id="live-output">
+                    <h3>Live Output</h3>
+                    <pre id="output-console"></pre>
+                </div>
+                <button id="run-code">Run Code</button>
+                <button id="submit-code">Submit</button>
+            </div>
+            <div class="test-suite-panel">
+                <h3>Test Suite</h3>
+                <ul id="test-results"></ul>
+            </div>
+            <div class="hints-sidebar">
+                <h3>Hints & Feedback</h3>
+                <ul id="hints-list"></ul>
+            </div>
+        </section>
+
+        <section id="dashboard">
+            <h2>Dashboard</h2>
+            <div class="stats">
+                <p>Problems Solved: <span id="problems-solved">0</span></p>
+                <p>Time Spent: <span id="time-spent">0 minutes</span></p>
+                <p>Skill Level: <span id="skill-level">Beginner</span></p>
+            </div>
+            <canvas id="improvement-chart"></canvas>
+            <div id="recommended-paths">
+                <h3>Recommended Learning Paths</h3>
+                <ul></ul>
+            </div>
+        </section>
+
+        <section id="profile">
+            <h2>Profile</h2>
+            <!-- Placeholder for profile info -->
+            <p>Edit your profile here.</p>
+        </section>
+
+        <section id="history">
+            <h2>History</h2>
+            <ul id="problem-history"></ul>
+        </section>
+
+        <section id="achievements">
+            <h2>Achievements</h2>
+            <ul id="badges-list"></ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 CodeQuest. All rights reserved.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
